@@ -29,8 +29,9 @@ public class RestaurantService {
         return restaurantRepository.findAll().stream().map(this::convertToRestaurantResponse).collect(Collectors.toList());
     }
 
-    public Optional<RestaurantResponse> getRestaurantById(Long restaurantId) {
-        return restaurantRepository.findById(restaurantId).map(this::convertToRestaurantResponse);
+    public RestaurantResponse getRestaurantById(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found: " + restaurantId));
+        return convertToRestaurantResponse(restaurant);
     }
 
     public RestaurantResponse createRestaurant(RestaurantRequest restaurantRequest) {

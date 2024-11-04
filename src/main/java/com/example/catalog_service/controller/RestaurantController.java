@@ -29,7 +29,7 @@ public class RestaurantController {
 
     @GetMapping("/{restaurantId}")
     public RestaurantResponse getRestaurantById(@PathVariable Long restaurantId) {
-        return restaurantService.getRestaurantById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        return restaurantService.getRestaurantById(restaurantId);
     }
 
     @PostMapping
