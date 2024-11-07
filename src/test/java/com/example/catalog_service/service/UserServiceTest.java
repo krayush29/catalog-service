@@ -7,6 +7,7 @@ import com.example.catalog_service.entity.User;
 import com.example.catalog_service.enums.Role;
 import com.example.catalog_service.exception.DuplicateUsernameException;
 import com.example.catalog_service.exception.InvalidPasswordException;
+import com.example.catalog_service.exception.UnAuthorizeRoleException;
 import com.example.catalog_service.exception.UserNotFoundException;
 import com.example.catalog_service.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -87,5 +89,52 @@ class UserServiceTest {
         when(userRepository.findByUsername("test_user")).thenReturn(Optional.of(user));
 
         assertThrows(InvalidPasswordException.class, () -> userService.getUser(userRequest));
+    }
+
+    @Test
+    void testIsAuthorizeSuccess() {
+        String username = "test_user";
+        String password = "password";
+        Role role = Role.ADMIN;
+        User user = new User(username, password, role);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        assertDoesNotThrow(() -> userService.isAuthorize(username, password, role));
+    }
+
+    @Test
+    void testIsAuthorizeUserNotFound() {
+        String username = "test_user";
+        String password = "password";
+        Role role = Role.ADMIN;
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.isAuthorize(username, password, role));
+    }
+
+    @Test
+    void testIsAuthorizeInvalidPassword() {
+        String username = "test_user";
+        String password = "wrong_password";
+        Role role = Role.ADMIN;
+        User user = new User(username, "password", role);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        assertThrows(InvalidPasswordException.class, () -> userService.isAuthorize(username, password, role));
+    }
+
+    @Test
+    void testIsAuthorizeUnAuthorizeRole() {
+        String username = "test_user";
+        String password = "password";
+        Role role = Role.CUSTOMER;
+        User user = new User(username, password, Role.ADMIN);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        assertThrows(UnAuthorizeRoleException.class, () -> userService.isAuthorize(username, password, role));
     }
 }

@@ -50,6 +50,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UnAuthorizeRoleException.class)
+    public ResponseEntity<String> handleUnAuthorizeRoleException(UnAuthorizeRoleException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<String> handleDuplicateUsernameException(DuplicateUsernameException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

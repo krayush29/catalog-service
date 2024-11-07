@@ -6,6 +6,7 @@ import com.example.catalog_service.dto.response.MenuItemResponse;
 import com.example.catalog_service.dto.response.RestaurantResponse;
 import com.example.catalog_service.entity.MenuItem;
 import com.example.catalog_service.entity.Restaurant;
+import com.example.catalog_service.enums.Role;
 import com.example.catalog_service.exception.RestaurantNotFoundException;
 import com.example.catalog_service.repository.MenuItemRepository;
 import com.example.catalog_service.repository.RestaurantRepository;
@@ -25,6 +26,9 @@ public class RestaurantService {
     @Autowired
     private MenuItemRepository menuItemRepository;
 
+    @Autowired
+    private UserService userService;
+
     public List<RestaurantResponse> getAllRestaurants() {
         return restaurantRepository.findAll().stream().map(this::convertToRestaurantResponse).collect(Collectors.toList());
     }
@@ -34,13 +38,17 @@ public class RestaurantService {
         return convertToRestaurantResponse(restaurant);
     }
 
+    // Only ADMIN can create a restaurant
     public RestaurantResponse createRestaurant(RestaurantRequest restaurantRequest) {
+        userService.isAuthorize(restaurantRequest.getUsername(), restaurantRequest.getPassword(), Role.ADMIN);
         Restaurant restaurant = new Restaurant(restaurantRequest.getName(), restaurantRequest.getAddress());
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return convertToRestaurantResponse(savedRestaurant);
     }
 
+    // Only ADMIN can create a menu item
     public MenuItemResponse createMenuItem(Long restaurantId, MenuItemRequest menuItemRequest) {
+        userService.isAuthorize(menuItemRequest.getUsername(), menuItemRequest.getPassword(), Role.ADMIN);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found: " + restaurantId));
         MenuItem menuItem = new MenuItem(menuItemRequest.getName(), menuItemRequest.getPrice(), restaurant);
         MenuItem savedMenuItem = menuItemRepository.save(menuItem);
@@ -54,10 +62,10 @@ public class RestaurantService {
 
     private RestaurantResponse convertToRestaurantResponse(Restaurant restaurant) {
         List<MenuItemResponse> menuItemResponses = restaurant.getMenuItems().stream().map(this::convertToMenuItemResponse).collect(Collectors.toList());
-        return new RestaurantResponse(restaurant.getName(), restaurant.getAddress(), menuItemResponses);
+        return new RestaurantResponse(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), menuItemResponses);
     }
 
     private MenuItemResponse convertToMenuItemResponse(MenuItem menuItem) {
-        return new MenuItemResponse(menuItem.getName(), menuItem.getPrice());
+        return new MenuItemResponse(menuItem.getId(), menuItem.getName(), menuItem.getPrice());
     }
 }

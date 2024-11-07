@@ -46,7 +46,7 @@ class UserControllerTest {
     @Test
     void testCreateUser() throws Exception {
         UserRegisterRequest userRequest = new UserRegisterRequest("test_user", "password", Role.ADMIN.toString());
-        UserResponse userResponse = new UserResponse("test_user", Role.ADMIN);
+        UserResponse userResponse = new UserResponse(1L,"test_user", Role.ADMIN);
 
         when(userService.createUser(any(UserRegisterRequest.class))).thenReturn(userResponse);
 
@@ -72,7 +72,7 @@ class UserControllerTest {
     @Test
     void testGetUser() throws Exception {
         UserRequest userRequest = new UserRequest("test_user", "password");
-        UserResponse userResponse = new UserResponse("test_user", Role.CUSTOMER);
+        UserResponse userResponse = new UserResponse(1L,"test_user", Role.CUSTOMER);
 
         when(userService.getUser(any(UserRequest.class))).thenReturn(userResponse);
 

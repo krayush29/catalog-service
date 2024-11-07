@@ -6,6 +6,7 @@ import com.example.catalog_service.dto.response.MenuItemResponse;
 import com.example.catalog_service.dto.response.RestaurantResponse;
 import com.example.catalog_service.entity.MenuItem;
 import com.example.catalog_service.entity.Restaurant;
+import com.example.catalog_service.enums.Role;
 import com.example.catalog_service.exception.RestaurantNotFoundException;
 import com.example.catalog_service.repository.MenuItemRepository;
 import com.example.catalog_service.repository.RestaurantRepository;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.stubbing.answers.DoesNothing;
 
 
 import java.util.Collections;
@@ -22,12 +24,16 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RestaurantServiceTest {
     @Mock
     private RestaurantRepository restaurantRepository;
+
+    @Mock
+    private UserService userService;
 
     @Mock
     private MenuItemRepository menuItemRepository;
@@ -65,10 +71,11 @@ class RestaurantServiceTest {
 
     @Test
     void testCreateRestaurant() {
-        RestaurantRequest restaurantRequest = new RestaurantRequest("test_restaurant", "test_address");
+        RestaurantRequest restaurantRequest = new RestaurantRequest("test_user", "password","test_restaurant", "test_address");
         Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
 
+        doNothing().when(userService).isAuthorize("test_user", "password", Role.ADMIN);
         RestaurantResponse restaurantResponse = restaurantService.createRestaurant(restaurantRequest);
 
         assertThat(restaurantResponse.getName()).isEqualTo("test_restaurant");
@@ -78,8 +85,10 @@ class RestaurantServiceTest {
     @Test
     void testCreateMenuItem() {
         Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
-        MenuItemRequest menuItemRequest = new MenuItemRequest("test_item", 9.99);
+        MenuItemRequest menuItemRequest = new MenuItemRequest("test_user", "password", "test_item", 9.99);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
+
+        doNothing().when(userService).isAuthorize("test_user", "password", Role.ADMIN);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
         when(menuItemRepository.save(any(MenuItem.class))).thenReturn(menuItem);
 
@@ -112,7 +121,9 @@ class RestaurantServiceTest {
 
     @Test
     void testExceptionNotFoundForMenuItemWithInvalidRestaurant() {
-        MenuItemRequest menuItemRequest = new MenuItemRequest("test_item", 9.99);
+        MenuItemRequest menuItemRequest = new MenuItemRequest("test_user", "password", "test_item", 9.99);
+
+        doNothing().when(userService).isAuthorize("test_user", "password", Role.ADMIN);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RestaurantNotFoundException.class, () -> restaurantService.createMenuItem(1L, menuItemRequest));

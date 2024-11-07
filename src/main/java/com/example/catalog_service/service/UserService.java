@@ -4,8 +4,10 @@ import com.example.catalog_service.dto.request.UserRegisterRequest;
 import com.example.catalog_service.dto.request.UserRequest;
 import com.example.catalog_service.dto.response.UserResponse;
 import com.example.catalog_service.entity.User;
+import com.example.catalog_service.enums.Role;
 import com.example.catalog_service.exception.DuplicateUsernameException;
 import com.example.catalog_service.exception.InvalidPasswordException;
+import com.example.catalog_service.exception.UnAuthorizeRoleException;
 import com.example.catalog_service.exception.UserNotFoundException;
 import com.example.catalog_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +26,25 @@ public class UserService {
 
         User user = new User(userRequest.getUsername(), userRequest.getPassword(), userRequest.getRole());
         userRepository.save(user);
-        return new UserResponse(user.getUsername(), user.getRole());
+        return new UserResponse(user.getId(), user.getUsername(), user.getRole());
     }
 
     public UserResponse getUser(UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername()).orElseThrow(() -> new UserNotFoundException("User not found for username: " + userRequest.getUsername()));
 
         if (user.getPassword().equals(userRequest.getPassword())) {
-            return new UserResponse(user.getUsername(), user.getRole());
+            return new UserResponse(user.getId(), user.getUsername(), user.getRole());
         } else {
             throw new InvalidPasswordException("Invalid password for username: " + userRequest.getUsername());
         }
+    }
+
+    public void isAuthorize(String username, String password, Role role) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
+
+        if (!user.getPassword().equals(password))
+            throw new InvalidPasswordException("Invalid password for username: " + username);
+        if (!user.getRole().equals(role))
+            throw new UnAuthorizeRoleException("UnAuthorize user: " + username);
     }
 }

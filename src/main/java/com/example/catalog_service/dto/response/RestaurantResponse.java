@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class RestaurantResponse {
+    private Long restaurantId;
     private String name;
     private String address;
     private List<MenuItemResponse> menuItems;

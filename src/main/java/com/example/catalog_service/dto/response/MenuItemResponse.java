@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MenuItemResponse {
+    private Long menuItemId;
     private String name;
     private double price;
 }

@@ -32,7 +32,7 @@ class RestaurantControllerTest {
 
     @Test
     public void testGetAllRestaurants() throws Exception {
-        RestaurantResponse restaurantResponse = new RestaurantResponse("test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, "test_restaurant", "test_address", Collections.emptyList());
 
         //Mock response
         Mockito.when(restaurantService.getAllRestaurants()).thenReturn(Collections.singletonList(restaurantResponse));
@@ -46,7 +46,7 @@ class RestaurantControllerTest {
 
     @Test
     public void testGetRestaurantById() throws Exception {
-        RestaurantResponse restaurantResponse = new RestaurantResponse("test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L,"test_restaurant", "test_address", Collections.emptyList());
 
         Mockito.when(restaurantService.getRestaurantById(1L)).thenReturn(restaurantResponse);
 
@@ -60,7 +60,7 @@ class RestaurantControllerTest {
     public void testCreateRestaurant() throws Exception {
         String requestBody = "{\"name\":\"test_restaurant\",\"address\":\"test_address\"}";
 
-        RestaurantResponse restaurantResponse = new RestaurantResponse("test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L,"test_restaurant", "test_address", Collections.emptyList());
 
         Mockito.when(restaurantService.createRestaurant(Mockito.any(RestaurantRequest.class))).thenReturn(restaurantResponse);
 
@@ -75,7 +75,7 @@ class RestaurantControllerTest {
     public void testCreateMenuItem() throws Exception {
         String requestBody = "{\"name\":\"test_item\",\"price\":9.99}";
 
-        MenuItemResponse menuItemResponse = new MenuItemResponse("test_item", 9.99);
+        MenuItemResponse menuItemResponse = new MenuItemResponse(1L,"test_item", 9.99);
 
         Mockito.when(restaurantService.createMenuItem(Mockito.eq(1L), Mockito.any(MenuItemRequest.class))).thenReturn(menuItemResponse);
 
@@ -88,7 +88,7 @@ class RestaurantControllerTest {
 
     @Test
     public void testGetMenuItemsByRestaurantId() throws Exception {
-        MenuItemResponse menuItemResponse = new MenuItemResponse("test_item", 9.99);
+        MenuItemResponse menuItemResponse = new MenuItemResponse(1L,"test_item", 9.99);
 
         Mockito.when(restaurantService.getMenuItemsByRestaurantId(1L)).thenReturn(Collections.singletonList(menuItemResponse));
 
