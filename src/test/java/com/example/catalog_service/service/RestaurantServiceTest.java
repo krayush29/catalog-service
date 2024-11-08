@@ -15,18 +15,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.stubbing.answers.DoesNothing;
-
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class RestaurantServiceTest {
     @Mock
@@ -48,7 +46,7 @@ class RestaurantServiceTest {
 
     @Test
     void testGetAllRestaurants() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         when(restaurantRepository.findAll()).thenReturn(Collections.singletonList(restaurant));
 
         List<RestaurantResponse> restaurantResponses = restaurantService.getAllRestaurants();
@@ -60,7 +58,7 @@ class RestaurantServiceTest {
 
     @Test
     void testGetRestaurantById() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
         RestaurantResponse restaurantResponse = restaurantService.getRestaurantById(1L);
@@ -71,8 +69,8 @@ class RestaurantServiceTest {
 
     @Test
     void testCreateRestaurant() {
-        RestaurantRequest restaurantRequest = new RestaurantRequest("test_user", "password","test_restaurant", "test_address");
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        RestaurantRequest restaurantRequest = new RestaurantRequest("test_user", "password", "test_restaurant", "test_address", null);
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
 
         doNothing().when(userService).isAuthorize("test_user", "password", Role.ADMIN);
@@ -84,7 +82,7 @@ class RestaurantServiceTest {
 
     @Test
     void testCreateMenuItem() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         MenuItemRequest menuItemRequest = new MenuItemRequest("test_user", "password", "test_item", 9.99);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
 
@@ -100,7 +98,7 @@ class RestaurantServiceTest {
 
     @Test
     void testGetMenuItemsByRestaurantId() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
         restaurant.getMenuItems().add(menuItem);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));

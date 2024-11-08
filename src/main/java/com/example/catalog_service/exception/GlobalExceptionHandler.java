@@ -50,6 +50,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DeliveryPartnerNotFoundException.class)
+    public ResponseEntity<String> handleDeliveryPartnerNotFoundException(DeliveryPartnerNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UnAuthorizeRoleException.class)
     public ResponseEntity<String> handleUnAuthorizeRoleException(UnAuthorizeRoleException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);

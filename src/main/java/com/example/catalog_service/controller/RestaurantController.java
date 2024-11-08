@@ -5,6 +5,7 @@ import com.example.catalog_service.dto.request.RestaurantRequest;
 import com.example.catalog_service.dto.response.MenuItemResponse;
 import com.example.catalog_service.dto.response.RestaurantResponse;
 import com.example.catalog_service.service.RestaurantService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public RestaurantResponse createRestaurant(@RequestBody RestaurantRequest restaurantRequest) {
+    public RestaurantResponse createRestaurant(@RequestBody @Valid RestaurantRequest restaurantRequest) {
         return restaurantService.createRestaurant(restaurantRequest);
     }
 

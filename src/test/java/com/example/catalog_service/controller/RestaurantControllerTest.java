@@ -4,7 +4,9 @@ import com.example.catalog_service.dto.request.MenuItemRequest;
 import com.example.catalog_service.dto.request.RestaurantRequest;
 import com.example.catalog_service.dto.response.MenuItemResponse;
 import com.example.catalog_service.dto.response.RestaurantResponse;
+import com.example.catalog_service.entity.Location;
 import com.example.catalog_service.service.RestaurantService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,15 @@ class RestaurantControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockBean
     private RestaurantService restaurantService;
 
     @Test
     public void testGetAllRestaurants() throws Exception {
-        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, "test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, "test_restaurant", "test_address", null, Collections.emptyList());
 
         //Mock response
         Mockito.when(restaurantService.getAllRestaurants()).thenReturn(Collections.singletonList(restaurantResponse));
@@ -46,7 +51,7 @@ class RestaurantControllerTest {
 
     @Test
     public void testGetRestaurantById() throws Exception {
-        RestaurantResponse restaurantResponse = new RestaurantResponse(1L,"test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, "test_restaurant", "test_address", null, Collections.emptyList());
 
         Mockito.when(restaurantService.getRestaurantById(1L)).thenReturn(restaurantResponse);
 
@@ -58,9 +63,11 @@ class RestaurantControllerTest {
 
     @Test
     public void testCreateRestaurant() throws Exception {
-        String requestBody = "{\"name\":\"test_restaurant\",\"address\":\"test_address\"}";
+        Location location = new Location(1.0, 1.0);
+        RestaurantRequest restaurantRequest = new RestaurantRequest("username", "password", "test_restaurant", "test_address", location);
+        String requestBody = objectMapper.writeValueAsString(restaurantRequest);
 
-        RestaurantResponse restaurantResponse = new RestaurantResponse(1L,"test_restaurant", "test_address", Collections.emptyList());
+        RestaurantResponse restaurantResponse = new RestaurantResponse(1L, "test_restaurant", "test_address", null, Collections.emptyList());
 
         Mockito.when(restaurantService.createRestaurant(Mockito.any(RestaurantRequest.class))).thenReturn(restaurantResponse);
 
@@ -75,7 +82,7 @@ class RestaurantControllerTest {
     public void testCreateMenuItem() throws Exception {
         String requestBody = "{\"name\":\"test_item\",\"price\":9.99}";
 
-        MenuItemResponse menuItemResponse = new MenuItemResponse(1L,"test_item", 9.99);
+        MenuItemResponse menuItemResponse = new MenuItemResponse(1L, "test_item", 9.99);
 
         Mockito.when(restaurantService.createMenuItem(Mockito.eq(1L), Mockito.any(MenuItemRequest.class))).thenReturn(menuItemResponse);
 
@@ -88,7 +95,7 @@ class RestaurantControllerTest {
 
     @Test
     public void testGetMenuItemsByRestaurantId() throws Exception {
-        MenuItemResponse menuItemResponse = new MenuItemResponse(1L,"test_item", 9.99);
+        MenuItemResponse menuItemResponse = new MenuItemResponse(1L, "test_item", 9.99);
 
         Mockito.when(restaurantService.getMenuItemsByRestaurantId(1L)).thenReturn(Collections.singletonList(menuItemResponse));
 

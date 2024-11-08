@@ -8,7 +8,7 @@ class MenuItemTest {
 
     @Test
     public void testMenuItemConstructor() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
 
         assertThat(menuItem.getName()).isEqualTo("test_item");

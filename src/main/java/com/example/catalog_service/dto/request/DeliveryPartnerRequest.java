@@ -1,19 +1,17 @@
-package com.example.catalog_service.dto.response;
+package com.example.catalog_service.dto.request;
 
 import com.example.catalog_service.entity.Location;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantResponse {
+public class DeliveryPartnerRequest {
     private Long restaurantId;
-    private String name;
-    private String address;
+    private Boolean isAvailable;
     private Location location;
-    private List<MenuItemResponse> menuItems;
 }

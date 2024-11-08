@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +40,7 @@ public class RestaurantService {
     // Only ADMIN can create a restaurant
     public RestaurantResponse createRestaurant(RestaurantRequest restaurantRequest) {
         userService.isAuthorize(restaurantRequest.getUsername(), restaurantRequest.getPassword(), Role.ADMIN);
-        Restaurant restaurant = new Restaurant(restaurantRequest.getName(), restaurantRequest.getAddress());
+        Restaurant restaurant = new Restaurant(restaurantRequest.getName(), restaurantRequest.getAddress(), restaurantRequest.getLocation());
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return convertToRestaurantResponse(savedRestaurant);
     }
@@ -62,7 +61,7 @@ public class RestaurantService {
 
     private RestaurantResponse convertToRestaurantResponse(Restaurant restaurant) {
         List<MenuItemResponse> menuItemResponses = restaurant.getMenuItems().stream().map(this::convertToMenuItemResponse).collect(Collectors.toList());
-        return new RestaurantResponse(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), menuItemResponses);
+        return new RestaurantResponse(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getLocation(), menuItemResponses);
     }
 
     private MenuItemResponse convertToMenuItemResponse(MenuItem menuItem) {

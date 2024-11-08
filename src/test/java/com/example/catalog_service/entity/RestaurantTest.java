@@ -8,7 +8,7 @@ class RestaurantTest {
 
     @Test
     void testRestaurantConstructorWithNameAndAddress() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
 
         assertThat(restaurant.getName()).isEqualTo("test_restaurant");
         assertThat(restaurant.getAddress()).isEqualTo("test_address");
@@ -17,7 +17,7 @@ class RestaurantTest {
 
     @Test
     void testAddMenuItemToRestaurant() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
 
         restaurant.getMenuItems().add(menuItem);
@@ -27,7 +27,7 @@ class RestaurantTest {
 
     @Test
     void testRemoveMenuItemFormRestaurant() {
-        Restaurant restaurant = new Restaurant("test_restaurant", "test_address");
+        Restaurant restaurant = new Restaurant("test_restaurant", "test_address", null);
         MenuItem menuItem = new MenuItem("test_item", 9.99, restaurant);
 
         restaurant.getMenuItems().add(menuItem);
